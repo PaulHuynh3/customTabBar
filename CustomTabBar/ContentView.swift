@@ -10,12 +10,19 @@ import SwiftUI
 struct ContentView: View {
     
     @State var selectedIndex = 0
+    @State private var isShowSheet = false
     
     let tabBarImageNames = ["person", "gear", "plus.app.fill", "pencil", "lasso"]
 
     var body: some View {
         
         VStack {
+            
+            Spacer().sheet(isPresented: $isShowSheet) {
+                Button("dismiss") {
+                    isShowSheet.toggle()
+                }
+            }
             
             ZStack {
                 switch selectedIndex {
@@ -25,21 +32,32 @@ struct ContentView: View {
                             .navigationTitle("First tab")
                     }
                 default:
-                    Text("Rest")
+                    NavigationView { //navigationView by default takes up entire span of screen either have this or Spacer
+                        Text("Rest")
+                    }
                 }
             }
-            
-            Spacer()
+            Divider()
             
             HStack {
                 ForEach(0..<5) { num in
                     Spacer()
                     Button {
                         selectedIndex = num
+                        if num == 2 {
+                            isShowSheet.toggle()
+                        }
                     } label: {
-                        Image(systemName: tabBarImageNames[num])
-                            .font(.system(size: 25, weight: .bold))
-                            .foregroundColor(Color(.black))
+                        if num == 2 {
+                            Image(systemName: tabBarImageNames[num])
+                                .font(.system(size: 45, weight: .bold))
+                                .foregroundColor(.red)
+                        } else {
+                            Image(systemName: tabBarImageNames[num])
+                                .font(.system(size: 25, weight: .bold))
+                                .foregroundColor( selectedIndex == num ? Color(.black) : .init(white: 0.8))
+                        }
+                        
                     }
                     Spacer()
                 }
